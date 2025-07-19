@@ -56,7 +56,7 @@
 
 ### 🌈 Demo en Vivo
 
-🔗 **[Jugar Ahora en GitHub Pages](https://TU_USUARIO.github.io/escandalo-kawaii-game/)**
+🔗 **[Jugar Ahora en GitHub Pages](https://leito-monk.github.io/escandalo-kawaii-game/)**
 
 ### 🦄 Características Kawaii
 

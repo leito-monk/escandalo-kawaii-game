@@ -81,9 +81,16 @@ El juego incluye:
 - 🔊 **Efectos de sonido** kawaii para colecciones
 - 🎉 **Melodía épica de victoria** al completar objetivos
 
-### 📄 Licencia
+---
 
-Este proyecto es una parodia educativa con fines de entretenimiento.
+## 👥 Créditos
+- **Idea y desarrollo:** Leandro Monk
+- **Colaboración:** gcoop - Cooperativa de Software Libre
+- **Diseño y arte kawaii:** IA + equipo gcoop
+- **Inspiración:** Comunidad INAES y cultura pop
+
+## 📄 Licencia
+Este proyecto está licenciado bajo la [GNU GPL v3](LICENSE).
 
 ---
 

@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESCÁNDALO INAES: El Juego de la Malversación</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Estrellas kawaii animadas */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #ffb3e6, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffd700, transparent),
+                radial-gradient(1px 1px at 130px 80px, #87ceeb, transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 3s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        @keyframes sparkle {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+        
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .hidden { display: none !important; }
+        
+        #menu {
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 218, 185, 0.95));
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            border: 4px solid #ff69b4;
+            max-width: 90vw;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #menu::before {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        #menu::after {
+            content: '🌟';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .title {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #dc143c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .title::before {
+            content: '💕';
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .title::after {
+            content: '💕';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 1.5s infinite 0.7s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+        
+        .subtitle {
+            color: #ff69b4;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+        }
+        
+        .characters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+        
+        .character {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 182, 193, 0.8));
+            border: 3px solid #ffb6c1;
+            border-radius: 20px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .character::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .character:hover {
+            border-color: #ff69b4;
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4);
+        }
+        
+        .character:hover::before {
+            opacity: 1;
+            animation: shimmer 0.8s ease-in-out;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .character.selected {
+            border-color: #ff1493;
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(255, 182, 193, 0.9));
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.6);
+        }
+        
+        .char-emoji { 
+            font-size: 2rem; 
+            margin-bottom: 5px; 
+        }
+        
+        .char-image {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #ffb6c1;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+        
+        .char-image::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 20%;
+            height: 20%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+            border-radius: 50%;
+            animation: sparkle-char 2s infinite;
+        }
+        
+        @keyframes sparkle-char {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .character:hover .char-image {
+            border-color: #ff69b4;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+        }
+        
+        .character.selected .char-image {
+            border-color: #ff1493;
+            box-shadow: 0 0 25px rgba(255, 20, 147, 0.7);
+        }
+        
+        .player-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #ffd700;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+        }
+        .char-name { 
+            font-size: 0.9rem; 
+            font-weight: bold; 
+            color: #ff1493; 
+            margin-bottom: 5px; 
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        .char-role { 
+            font-size: 0.75rem; 
+            color: #ff69b4; 
+            font-style: italic;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        #startBtn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #dc143c);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            max-width: 320px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #startBtn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        #startBtn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+        }
+        
+        #startBtn:hover::before {
+            left: 100%;
+        }
+        
+        #game {
+            background: linear-gradient(45deg, #ffeef0 25%, transparent 25%), 
+                        linear-gradient(-45deg, #ffeef0 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #ffeef0 75%), 
+                        linear-gradient(-45deg, transparent 75%, #ffeef0 75%);
+            background-size: 60px 60px;
+            background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+            position: relative;
+        }
+        
+        #ui {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 218, 185, 0.95));
+            padding: 15px;
+            border-radius: 20px;
+            border: 3px solid #ff69b4;
+            z-index: 100;
+            font-size: 0.85rem;
+            min-width: 220px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            color: #333;
+            font-weight: 600;
+        }
+        
+        #ui div { 
+            margin-bottom: 5px; 
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+        
+        #player {
+            position: fixed;
+            font-size: 2.5rem;
+            z-index: 50;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+            pointer-events: none;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .money {
+            position: fixed;
+            font-size: 2rem;
+            z-index: 30;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(2px 2px 4px rgba(255, 105, 180, 0.4));
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        .money:hover {
+            transform: scale(1.3) rotate(10deg);
+            filter: drop-shadow(3px 3px 6px rgba(255, 105, 180, 0.6));
+        }
+        
+        #bank {
+            position: fixed;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.95), rgba(255, 218, 185, 0.95));
+            border: 3px solid #ff69b4;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            width: 160px;
+            z-index: 40;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        #bank:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+        }
+        
+        .bank-emoji { 
+            font-size: 2.5rem; 
+            margin-bottom: 8px; 
+            filter: drop-shadow(2px 2px 4px rgba(255, 105, 180, 0.3));
+        }
+        
+        .bank-title { 
+            color: #ff1493; 
+            font-weight: bold; 
+            margin: 8px 0; 
+            font-size: 0.8rem; 
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+        
+        .bank-subtitle { 
+            color: #ff69b4; 
+            font-size: 0.65rem; 
+            margin: 3px 0; 
+            font-weight: 600;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
+        }
+        
+        #year {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            font-weight: bold;
+            z-index: 100;
+            font-size: 0.8rem;
+        }
+        
+        .level-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FFC0CB);
+            border: 4px solid #FF69B4;
+            border-radius: 30px;
+            padding: 35px 45px;
+            text-align: center;
+            z-index: 200;
+            max-width: 90vw;
+            animation: kawaii-level-popup 0.8s ease-out;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.3),
+                        inset 0 5px 15px rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes kawaii-level-popup {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(-45deg); 
+                opacity: 0; 
+            }
+            60% { 
+                transform: translate(-50%, -50%) scale(1.15) rotate(5deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+                opacity: 1; 
+            }
+        }
+        
+        .level-title {
+            background: linear-gradient(45deg, #FF1493, #FF69B4, #FFB6C1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 3px 15px rgba(255, 20, 147, 0.4);
+            animation: kawaii-shimmer 2s ease-in-out infinite;
+        }
+        
+        .level-message {
+            color: #4A0E4E;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(255, 182, 193, 0.6);
+        }
+        
+        .level-stats {
+            color: #8B008B;
+            font-family: 'Comic Sans MS', cursive;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-shadow: 0 1px 5px rgba(255, 192, 203, 0.5);
+        }
+        
+        .particle {
+            position: fixed;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 60;
+            animation: floatUp 2s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-80px); }
+        }
+        
+        /* Intro Star Wars Kawaii */
+        .kawaii-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000428, #004e92, #009ffd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        
+        .kawaii-intro::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="%23FFB6C1"><animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="1" fill="%23FF69B4"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></circle><circle cx="40" cy="70" r="1" fill="%23FFC0CB"><animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/></circle><circle cx="60" cy="50" r="1" fill="%23FFE4E1"><animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/></circle></svg>') repeat;
+            animation: kawaii-stars 20s linear infinite;
+        }
+        
+        @keyframes kawaii-stars {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(-50%) translateX(-50%); }
+        }
+        
+        .kawaii-crawl {
+            perspective: 400px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        
+        .kawaii-text {
+            transform: rotateX(25deg);
+            transform-origin: bottom;
+            animation: kawaii-scroll 25s linear forwards;
+            color: #FFB6C1;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.8rem;
+            line-height: 1.8;
+            text-shadow: 0 0 20px rgba(255, 182, 193, 0.8),
+                         0 0 40px rgba(255, 105, 180, 0.6);
+        }
+        
+        .kawaii-text h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #FF69B4;
+            text-shadow: 0 0 30px rgba(255, 105, 180, 1);
+            animation: kawaii-glow 2s ease-in-out infinite alternate;
+        }
+        
+        .kawaii-text p {
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        @keyframes kawaii-scroll {
+            0% {
+                transform: rotateX(25deg) translateY(100vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotateX(25deg) translateY(-150vh);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes kawaii-glow {
+            0% { text-shadow: 0 0 30px rgba(255, 105, 180, 1); }
+            100% { text-shadow: 0 0 50px rgba(255, 105, 180, 1), 0 0 70px rgba(255, 182, 193, 0.8); }
+        }
+        
+        @keyframes kawaii-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .skip-intro {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+            border: 2px solid #FF1493;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+            animation: kawaii-pulse 2s ease-in-out infinite;
+        }
+        
+        .skip-intro:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        }
+        
+        #gameOver {
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 3px solid #ff0040;
+            max-width: 90vw;
+        }
+        
+        #restartBtn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            color: black;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 1.5rem; }
+            .characters { gap: 8px; }
+            .character { padding: 8px; }
+            #ui, #year { font-size: 0.7rem; }
+            #bank { width: 120px; }
+        }
+        
+        .audio-controls {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 150;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .audio-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffd700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #ffd700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .audio-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .audio-btn.muted {
+            color: #ff0040;
+            border-color: #ff0040;
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Kawaii Star Wars -->
+    <div class="kawaii-intro" id="kawaiiIntro">
+        <div class="kawaii-crawl">
+            <div class="kawaii-text">
+                <h1>✨ ESCÁNDALO KAWAII ✨</h1>
+                <p>Hace muchos años en un país muy cercano se realizó un defalco de proporciones épicas...</p>
+                <p>🌸 En una galaxia no tan lejana, donde los números bailaban al ritmo de la corrupción, cuatro adorables funcionarios decidieron convertir el INAES en su propio reino kawaii de malversación. 🌸</p>
+                <p>💕 Los presupuestos públicos se transformaron en un juego de amor por el dinero, donde cada peso desviado era como un corazoncito que flotaba hacia sus cuentas bancarias personales. 💕</p>
+                <p>🦄 Las cooperativas confiaron sus fondos, sin saber que estos serían el combustible para la más adorable aventura de corrupción jamás vista. 🦄</p>
+                <p>🌟 Ahora, en este mundo kawaii, tú debes ayudar a estos súper cute funcionarios a recolectar todos los fondos que caen del cielo en un juego donde la malversación nunca había sido tan tierna. 🌟</p>
+                <p>💎 ¿Podrás convertirte en la leyenda más kawaii de la corrupción? ¡El destino de los presupuestos está en tus manitas! 💎</p>
+                <p style="font-size: 1.5rem; color: #FF69B4; margin-top: 40px;">🎮 ¡Que comience la aventura más adorable! 🎮</p>
+            </div>
+        </div>
+        <button class="skip-intro" onclick="skipIntro()">✨ Saltar Intro ✨</button>
+    </div>
+
+    <div id="menu" class="screen">
+        <div class="title">🌸 ESCÁNDALO KAWAII INAES 🌸</div>
+        <div class="subtitle">El Juego Súper Cute de Malversación de Fondos ✨💕</div>
+        
+        <div class="characters">
+            <div class="character" data-char="jefe">
+                <div class="char-image" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDEpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZENzAwIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGQzEwNyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg==');"></div>
+                <div class="char-name">JEFE DE GABINETE ✨</div>
+                <div class="char-role">Elabora presupuestos súper kawaii 💝</div>
+            </div>
+            <div class="character" data-char="ministro">
+                <div class="char-image" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDIpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkY2OUI0Ii8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGMTQ5MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg==');"></div>
+                <div class="char-name">MIN. ECONOMÍA 🌸</div>
+                <div class="char-role">Retiene fondos con amor 💖</div>
+            </div>
+            <div class="character" data-char="presidente">
+                <div class="char-image" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDMpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjOTBFRTkwIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwRkYwMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg==');"></div>
+                <div class="char-name">PRES. INAES 🌟</div>
+                <div class="char-role">Desvía recursos cutely 🎀</div>
+            </div>
+            <div class="character" data-char="tesorero">
+                <div class="char-image" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDQpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkNCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjREE3MEQ2Ii8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzgwMDBGRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg==');"></div>
+                <div class="char-name">TESORERO GRAL. 🎈</div>
+                <div class="char-role">Administra el saqueo mágico ✨</div>
+            </div>
+        </div>
+        
+        <button id="startBtn">🚀 INICIAR MALVERSACIÓN</button>
+    </div>
+    
+    <div id="game" class="screen hidden">
+        <div id="ui">
+            <div>💰 Fondos: $<span id="score">0</span>M</div>
+            <div>⏱️ Tiempo: <span id="time">90</span>s</div>
+            <div>🎯 Meta: $<span id="target">800</span>M</div>
+            <div>� Nivel: <span id="levelDisplay">1</span></div>
+            <div>🏆 <span id="levelTitle">🥉 APRENDIZ</span></div>
+            <div>�👤 <span id="playerName">Funcionario</span></div>
+        </div>
+        
+        <div id="year">📅 PRESUPUESTO <span id="currentYear">2023</span></div>
+        
+        <div id="player" class="player-image"></div>
+        
+        <div id="bank">
+            <div class="bank-emoji">🏦</div>
+            <div class="bank-title">BANCO CENTRAL</div>
+            <div class="bank-subtitle">MALVERSACIÓN DE FONDOS</div>
+            <div class="bank-subtitle">💀 DEPÓSITO ILEGAL 💀</div>
+        </div>
+    </div>
+    
+    <div id="gameOver" class="screen hidden">
+        <h2 style="color: #ff0040; margin-bottom: 15px;">🚨 INVESTIGACIÓN COMPLETADA 🚨</h2>
+        <p>Total Malversado: $<span id="finalScore">0</span>M</p>
+        <p>Presupuestos Afectados: <span id="finalLevels">1</span></p>
+        <p style="color: #ff0040; margin-top: 15px;">¡El escándalo ha sido documentado!</p>
+        <button id="restartBtn">🔄 NUEVA INVESTIGACIÓN</button>
+    </div>
+    
+    <!-- Controles de Audio -->
+    <div class="audio-controls">
+        <div class="audio-btn" id="musicToggle" title="Música">🎵</div>
+        <div class="audio-btn" id="soundToggle" title="Efectos de Sonido">🔊</div>
+    </div>
+
+    <script>
+        // Funciones para la intro kawaii
+        function skipIntro() {
+            const intro = document.getElementById('kawaiiIntro');
+            intro.style.animation = 'fadeOut 0.5s ease-out forwards';
+            setTimeout(() => {
+                intro.style.display = 'none';
+            }, 500);
+        }
+        
+        // Auto-skip intro después de 25 segundos
+        setTimeout(() => {
+            const intro = document.getElementById('kawaiiIntro');
+            if (intro && intro.style.display !== 'none') {
+                skipIntro();
+            }
+        }, 25000);
+        
+        // Agregar animación fadeOut al CSS dinámicamente
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        let selectedCharacter = null;
+        let gameState = 'menu';
+        let score = 0;
+        let timeLeft = 60;
+        let level = 2023;
+        let target = 1000;
+        let playerX = 100;
+        let playerY = 300;
+        let moneyBags = [];
+        let isRunning = false;
+        let spawnTimeout = null;
+        let gameLoopTimeout = null;
+        let timerTimeout = null;
+        let currentLevel = 1;
+        let levelsCompleted = 0;
+        
+        // Variables de dificultad progresiva
+        const DIFFICULTY_CONFIG = {
+            BASE_SPEED: 1.5,         // Velocidad base inicial (reducida)
+            SPEED_INCREMENT: 0.2,    // Incremento de velocidad por nivel (reducido)
+            MAX_SPEED: 6,            // Velocidad máxima (reducida)
+            BASE_SPAWN_RATE: 1800,   // Tiempo base entre spawns (ms) (aumentado)
+            SPAWN_RATE_DECREASE: 40, // Reducción del tiempo por nivel (reducido)
+            MIN_SPAWN_RATE: 800      // Tiempo mínimo entre spawns (aumentado)
+        };
+        
+        let currentDifficultyMultiplier = 1;
+        let currentSpawnRate = DIFFICULTY_CONFIG.BASE_SPAWN_RATE;
+        
+        // Variables de victoria
+        const VICTORY_CONDITIONS = {
+            LEVELS: 5,         // Ganar completando 5 niveles (reducido de 10)
+            MEGA_SCORE: 15000, // Ganar alcanzando 15,000M malversados (reducido de 50,000)
+            TIME_MASTER: 180   // Ganar durando 3 minutos (reducido de 5 minutos)
+        };
+        
+        let gameStartTime = 0;
+        let totalPlayTime = 0;
+        
+        // Variables de audio
+        let audioContext = null;
+        let backgroundMusic = null;
+        let musicEnabled = true;
+        let soundEnabled = true;
+        
+        // Inicializar contexto de audio
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                createBackgroundMusic();
+            }
+        }
+        
+        // Crear música de fondo usando osciladores
+        function createBackgroundMusic() {
+            if (!audioContext || !musicEnabled) return;
+            
+            // Crear melodía estilo 8-bit más animada
+            const melody = [
+                { freq: 262, duration: 0.3 }, // C4
+                { freq: 294, duration: 0.3 }, // D4
+                { freq: 330, duration: 0.3 }, // E4
+                { freq: 349, duration: 0.3 }, // F4
+                { freq: 392, duration: 0.6 }, // G4
+                { freq: 330, duration: 0.3 }, // E4
+                { freq: 349, duration: 0.3 }, // F4
+                { freq: 262, duration: 0.6 }, // C4
+                { freq: 294, duration: 0.3 }, // D4
+                { freq: 330, duration: 0.3 }, // E4
+                { freq: 392, duration: 0.6 }, // G4
+                { freq: 440, duration: 0.6 }, // A4
+                { freq: 392, duration: 0.3 }, // G4
+                { freq: 349, duration: 0.3 }, // F4
+                { freq: 330, duration: 1.2 }  // E4
+            ];
+            
+            let noteIndex = 0;
+            let currentOscillator = null;
+            
+            const playNextNote = () => {
+                if (!musicEnabled || !audioContext) return;
+                
+                // Detener nota anterior si existe
+                if (currentOscillator) {
+                    currentOscillator.stop();
+                }
+                
+                // Crear nueva nota
+                currentOscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                currentOscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configurar sonido 8-bit
+                currentOscillator.type = 'square';
+                currentOscillator.frequency.setValueAtTime(melody[noteIndex].freq, audioContext.currentTime);
+                
+                // Volumen más suave
+                gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + melody[noteIndex].duration);
+                
+                currentOscillator.start();
+                currentOscillator.stop(audioContext.currentTime + melody[noteIndex].duration);
+                
+                // Avanzar a la siguiente nota
+                noteIndex = (noteIndex + 1) % melody.length;
+                
+                // Programar siguiente nota
+                setTimeout(playNextNote, melody[noteIndex === 0 ? melody.length - 1 : noteIndex - 1].duration * 1000);
+            };
+            
+            playNextNote();
+            backgroundMusic = { oscillator: currentOscillator };
+        }
+        
+        // Efectos de sonido usando osciladores
+        function playSound(type) {
+            if (!audioContext || !soundEnabled) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'money':
+                    // Sonido de dinero - tono suave ascendente 8-bit
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+                    oscillator.frequency.exponentialRampToValueAtTime(784, audioContext.currentTime + 0.15); // G5
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                    break;
+                    
+                case 'levelup':
+                    // Sonido de nivel completado - melodía alegre 8-bit
+                    const levelNotes = [523, 659, 784, 1047, 1175]; // C5, E5, G5, C6, D6
+                    let levelNoteIndex = 0;
+                    
+                    const playLevelNote = () => {
+                        if (levelNoteIndex >= levelNotes.length) return;
+                        
+                        const levelOsc = audioContext.createOscillator();
+                        const levelGain = audioContext.createGain();
+                        
+                        levelOsc.connect(levelGain);
+                        levelGain.connect(audioContext.destination);
+                        
+                        levelOsc.type = 'square';
+                        levelOsc.frequency.setValueAtTime(levelNotes[levelNoteIndex], audioContext.currentTime);
+                        levelGain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        levelGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        
+                        levelOsc.start();
+                        levelOsc.stop(audioContext.currentTime + 0.2);
+                        
+                        levelNoteIndex++;
+                        setTimeout(playLevelNote, 100);
+                    };
+                    
+                    playLevelNote();
+                    break;
+                    
+                case 'bank':
+                    // Sonido de banco - tono suave y profundo
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
+                    oscillator.frequency.exponentialRampToValueAtTime(196, audioContext.currentTime + 0.2); // G3
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                    
+                case 'gameover':
+                    // Sonido de game over - secuencia melancólica 8-bit
+                    const gameOverNotes = [440, 415, 392, 370, 349]; // A4 descendente
+                    let gameOverIndex = 0;
+                    
+                    const playGameOverNote = () => {
+                        if (gameOverIndex >= gameOverNotes.length) return;
+                        
+                        const gameOverOsc = audioContext.createOscillator();
+                        const gameOverGain = audioContext.createGain();
+                        
+                        gameOverOsc.connect(gameOverGain);
+                        gameOverGain.connect(audioContext.destination);
+                        
+                        gameOverOsc.type = 'triangle';
+                        gameOverOsc.frequency.setValueAtTime(gameOverNotes[gameOverIndex], audioContext.currentTime);
+                        gameOverGain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gameOverGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                        
+                        gameOverOsc.start();
+                        gameOverOsc.stop(audioContext.currentTime + 0.4);
+                        
+                        gameOverIndex++;
+                        setTimeout(playGameOverNote, 300);
+                    };
+                    
+                    playGameOverNote();
+                    break;
+            }
+        }
+        
+        // Controlar música de fondo
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const btn = document.getElementById('musicToggle');
+            
+            if (musicEnabled) {
+                btn.textContent = '🎵';
+                btn.classList.remove('muted');
+                if (gameState === 'playing') {
+                    createBackgroundMusic();
+                }
+            } else {
+                btn.textContent = '🔇';
+                btn.classList.add('muted');
+                if (backgroundMusic) {
+                    backgroundMusic.oscillator.stop();
+                    backgroundMusic = null;
+                }
+            }
+        }
+        
+        // Controlar efectos de sonido
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('soundToggle');
+            
+            if (soundEnabled) {
+                btn.textContent = '🔊';
+                btn.classList.remove('muted');
+            } else {
+                btn.textContent = '🔇';
+                btn.classList.add('muted');
+            }
+        }
+        
+        // Calcular dificultad actual basada en el nivel
+        function updateDifficulty() {
+            // Calcular multiplicador de velocidad
+            const speedMultiplier = DIFFICULTY_CONFIG.BASE_SPEED + 
+                (currentLevel - 1) * DIFFICULTY_CONFIG.SPEED_INCREMENT;
+            currentDifficultyMultiplier = Math.min(speedMultiplier, DIFFICULTY_CONFIG.MAX_SPEED);
+            
+            // Calcular velocidad de spawn (más rápido en niveles altos)
+            currentSpawnRate = Math.max(
+                DIFFICULTY_CONFIG.BASE_SPAWN_RATE - (currentLevel - 1) * DIFFICULTY_CONFIG.SPAWN_RATE_DECREASE,
+                DIFFICULTY_CONFIG.MIN_SPAWN_RATE
+            );
+            
+            // Mostrar información de dificultad en la UI
+            updateDifficultyDisplay();
+        }
+        
+        // Actualizar display de dificultad
+        function updateDifficultyDisplay() {
+            const speedPercentage = Math.round((currentDifficultyMultiplier / DIFFICULTY_CONFIG.MAX_SPEED) * 100);
+            const spawnPercentage = Math.round((1 - (currentSpawnRate - DIFFICULTY_CONFIG.MIN_SPAWN_RATE) / 
+                (DIFFICULTY_CONFIG.BASE_SPAWN_RATE - DIFFICULTY_CONFIG.MIN_SPAWN_RATE)) * 100);
+            
+            // Añadir indicador visual de dificultad
+            let difficultyLevel = "FÁCIL";
+            let difficultyColor = "#00ff00";
+            
+            if (currentLevel >= 8) {
+                difficultyLevel = "EXTREMO";
+                difficultyColor = "#ff0040";
+            } else if (currentLevel >= 6) {
+                difficultyLevel = "DIFÍCIL";
+                difficultyColor = "#ff8000";
+            } else if (currentLevel >= 4) {
+                difficultyLevel = "MEDIO";
+                difficultyColor = "#ffff00";
+            } else if (currentLevel >= 2) {
+                difficultyLevel = "NORMAL";
+                difficultyColor = "#80ff80";
+            }
+            
+            // Actualizar el título del nivel con info de dificultad
+            const titleIndex = Math.min(currentLevel - 1, levelTitles.length - 1);
+            const difficultyIndicator = `<span style="color: ${difficultyColor};">[${difficultyLevel}]</span>`;
+            document.getElementById('levelTitle').innerHTML = `${levelTitles[titleIndex]} ${difficultyIndicator}`;
+        }
+        
+        // Verificar condiciones de victoria
+        function checkVictoryConditions() {
+            // Victoria por niveles completados
+            if (levelsCompleted >= VICTORY_CONDITIONS.LEVELS) {
+                winGame('MAESTRO DE LA CORRUPCIÓN', 
+                       `¡Has completado ${levelsCompleted} niveles de malversación!`,
+                       '🏆 Has dominado completamente el arte del saqueo estatal');
+                return true;
+            }
+            
+            // Victoria por puntuación mega
+            if (score >= VICTORY_CONDITIONS.MEGA_SCORE) {
+                winGame('EMPERADOR DEL DESFALCO', 
+                       `¡Has malversado $${score}M en fondos públicos!`,
+                       '💎 Tu nivel de corrupción es legendario');
+                return true;
+            }
+            
+            // Victoria por supervivencia temporal
+            totalPlayTime = Math.floor((Date.now() - gameStartTime) / 1000);
+            if (totalPlayTime >= VICTORY_CONDITIONS.TIME_MASTER) {
+                winGame('SOBREVIVIENTE SUPREMO', 
+                       `¡Has evadido la justicia por ${Math.floor(totalPlayTime/60)} minutos!`,
+                       '⭐ Tu habilidad para esquivar investigaciones es admirable');
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Ganar el juego
+        function winGame(title, message, description) {
+            isRunning = false;
+            gameState = 'victory';
+            
+            // Limpiar timeouts
+            if (spawnTimeout) clearTimeout(spawnTimeout);
+            if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
+            if (timerTimeout) clearTimeout(timerTimeout);
+            
+            // Detener música de fondo
+            if (backgroundMusic && backgroundMusic.oscillator) {
+                backgroundMusic.oscillator.stop();
+                backgroundMusic = null;
+            }
+            
+            // Sonido épico de victoria
+            playVictorySound();
+            
+            // Mostrar pantalla de victoria
+            showVictoryScreen(title, message, description);
+        }
+        
+        // Sonido épico de victoria
+        function playVictorySound() {
+            if (!audioContext || !soundEnabled) return;
+            
+            // Melodía épica de victoria estilo 8-bit
+            const victoryMelody = [
+                { freq: 523, duration: 0.2 }, // C5
+                { freq: 659, duration: 0.2 }, // E5
+                { freq: 784, duration: 0.2 }, // G5
+                { freq: 1047, duration: 0.4 }, // C6
+                { freq: 880, duration: 0.2 }, // A5
+                { freq: 1047, duration: 0.2 }, // C6
+                { freq: 1175, duration: 0.6 }, // D6
+                { freq: 1047, duration: 0.3 }, // C6
+                { freq: 784, duration: 0.3 }, // G5
+                { freq: 1047, duration: 0.8 }  // C6
+            ];
+            
+            let noteIndex = 0;
+            
+            const playVictoryNote = () => {
+                if (noteIndex >= victoryMelody.length) return;
+                
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(victoryMelody[noteIndex].freq, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.25, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + victoryMelody[noteIndex].duration);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + victoryMelody[noteIndex].duration);
+                
+                noteIndex++;
+                setTimeout(playVictoryNote, victoryMelody[noteIndex - 1].duration * 1000);
+            };
+            
+            playVictoryNote();
+        }
+        
+        // Mostrar pantalla de victoria
+        function showVictoryScreen(title, message, description) {
+            document.getElementById('game').classList.add('hidden');
+            
+            // Crear pantalla de victoria
+            const victoryScreen = document.createElement('div');
+            victoryScreen.className = 'screen';
+            victoryScreen.id = 'victoryScreen';
+            victoryScreen.innerHTML = `
+                <div style="background: linear-gradient(135deg, #FFE4E1, #FFB6C1, #FFC0CB); border-radius: 25px; padding: 45px; text-align: center; border: 4px solid #FF69B4; max-width: 90vw; animation: kawaii-level-popup 0.8s ease-out; box-shadow: 0 25px 50px rgba(255, 105, 180, 0.4), inset 0 5px 20px rgba(255, 255, 255, 0.3);">
+                    <h1 style="background: linear-gradient(45deg, #FF1493, #FF69B4, #FFB6C1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'Comic Sans MS', cursive; font-size: 3rem; margin-bottom: 25px; text-shadow: 0 5px 20px rgba(255, 20, 147, 0.5); animation: kawaii-bounce 1s ease-in-out infinite;">✨ ¡SÚPER KAWAII! ✨</h1>
+                    <div style="color: #FF1493; font-family: 'Comic Sans MS', cursive; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px; text-shadow: 0 3px 10px rgba(255, 182, 193, 0.7);">${title}</div>
+                    <div style="color: #4A0E4E; font-family: 'Comic Sans MS', cursive; font-size: 1.3rem; margin-bottom: 20px; text-shadow: 0 2px 8px rgba(255, 192, 203, 0.6);">${message}</div>
+                    <div style="color: #8B008B; font-family: 'Comic Sans MS', cursive; font-size: 1.1rem; margin-bottom: 30px; text-shadow: 0 1px 5px rgba(255, 182, 193, 0.5);">${description}</div>
+                    
+                    <div style="background: linear-gradient(135deg, #FFEEF0, #FFD0DC); padding: 25px; border-radius: 20px; margin: 25px 0; border: 2px solid #FFB6C1; box-shadow: inset 0 3px 10px rgba(255, 255, 255, 0.4);">
+                        <h3 style="color: #FF1493; font-family: 'Comic Sans MS', cursive; margin-bottom: 20px; font-size: 1.5rem;">🌸 ESTADÍSTICAS KAWAII 🌸</h3>
+                        <div style="color: #4A0E4E; font-family: 'Comic Sans MS', cursive; margin: 8px 0; font-weight: 600;">� Total Conseguido: $${score}M</div>
+                        <div style="color: #4A0E4E; font-family: 'Comic Sans MS', cursive; margin: 8px 0; font-weight: 600;">� Niveles Súper: ${levelsCompleted}</div>
+                        <div style="color: #4A0E4E; font-family: 'Comic Sans MS', cursive; margin: 8px 0; font-weight: 600;">⏰ Tiempo Mágico: ${Math.floor(totalPlayTime/60)}:${(totalPlayTime%60).toString().padStart(2,'0')}</div>
+                        <div style="color: #4A0E4E; font-family: 'Comic Sans MS', cursive; margin: 8px 0; font-weight: 600;">🎀 Aventuras Completadas: ${levelsCompleted + 1}</div>
+                    </div>
+                    
+                    <div style="margin: 25px 0; font-size: 1rem; color: #8B008B; font-family: 'Comic Sans MS', cursive; text-shadow: 0 1px 3px rgba(255, 182, 193, 0.5);">
+                        🦄 ¡Eres la protagonista más kawaii de todas! 🦄<br>
+                        Los libros de historia recordarán tu "trabajo".
+                    </div>
+                    
+                    <button id="playAgainBtn" style="background: linear-gradient(135deg, #FF69B4, #FFB6C1, #FFC0CB); border: 3px solid #FF1493; padding: 18px 35px; font-size: 1.2rem; color: white; border-radius: 25px; cursor: pointer; font-weight: bold; margin: 15px; font-family: 'Comic Sans MS', cursive; text-shadow: 0 2px 5px rgba(0,0,0,0.3); box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4), inset 0 3px 10px rgba(255, 255, 255, 0.3); transition: all 0.3s ease; animation: kawaii-pulse 2s ease-in-out infinite;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        ✨ ¡NUEVA AVENTURA KAWAII! ✨
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(victoryScreen);
+            
+            // Event listener para reiniciar
+            document.getElementById('playAgainBtn').addEventListener('click', function() {
+                document.body.removeChild(victoryScreen);
+                restart();
+            });
+        }
+        
+        const chars = {
+            jefe: { 
+                emoji: '👔', 
+                name: 'Jefe de Gabinete',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDEpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZENzAwIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGQzEwNyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg=='
+            },
+            ministro: { 
+                emoji: '💼', 
+                name: 'Min. Economía',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDIpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkY2OUI0Ii8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0ZGMTQ5MyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg=='
+            },
+            presidente: { 
+                emoji: '🎩', 
+                name: 'Pres. INAES',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDMpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjOTBFRTkwIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwRkYwMCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg=='
+            },
+            tesorero: { 
+                emoji: '🏛️', 
+                name: 'Tesorero Gral.',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHZpZXdCb3g9IjAgMCA3MCA3MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iMzUiIGZpbGw9InVybCgjZ3JhZDQpIi8+CjxjaXJjbGUgY3g9IjI2IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiMzMzMiLz4KPGNpcmNsZSBjeD0iNDQiIGN5PSIyOCIgcj0iMyIgZmlsbD0iIzMzMyIvPgo8cGF0aCBkPSJNMjggNDJDMjggNDIgMzEgNDUgMzUgNDVDMzkgNDUgNDIgNDIgNDIgNDIiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iMjQiIGN5PSIzNCIgcj0iNCIgZmlsbD0iI0ZGQjZDMSIgb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjQ2IiBjeT0iMzQiIHI9IjQiIGZpbGw9IiNGRkI2QzEiIG9wYWNpdHk9IjAuOCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkNCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjREE3MEQ2Ii8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzgwMDBGRiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPg=='
+            }
+        };
+        
+        const moneyTypes = [
+            { emoji: '💰', value: 50, name: 'FONAVI' },
+            { emoji: '💵', value: 75, name: 'FONID' },
+            { emoji: '🤑', value: 100, name: 'LEY 23.427' },
+            { emoji: '💎', value: 150, name: 'COMBUSTIBLES' }
+        ];
+        
+        const levelMessages = [
+            "¡Bien! Has roto otra meta de malversación 💰",
+            "¡Felicitaciones! Eres el mejor malversador del país 🏆",
+            "¡Excelente! Los fondos públicos están en 'buenas' manos 🤝",
+            "¡Impresionante! Tu nivel de corrupción es ejemplar 📈",
+            "¡Magnífico! Has superado todas las expectativas de saqueo 💪",
+            "¡Increíble! Tu creatividad para robar no tiene límites 🎭",
+            "¡Fantástico! Otro presupuesto más bajo tu control 🎯",
+            "¡Sobresaliente! La malversación nunca había sido tan elegante 👑",
+            "¡Extraordinario! Has alcanzado nuevos niveles de corrupción 🚀",
+            "¡Perfecto! Tu talento para el saqueo es innato 🌟",
+            "¡Espectacular! Los ciudadanos te 'agradecen' tu servicio 😈",
+            "¡Genial! Has convertido la corrupción en un arte 🎨"
+        ];
+        
+        const levelTitles = [
+            "🥉 APRENDIZ DE CORRUPCIÓN",
+            "🥈 MALVERSADOR INTERMEDIO", 
+            "🥇 EXPERTO EN SAQUEO",
+            "💎 MAESTRO DE LA CORRUPCIÓN",
+            "👑 EMPERADOR DEL DESFALCO",
+            "🏆 LEYENDA DE LA MALVERSACIÓN",
+            "⭐ DIOS DE LA CORRUPCIÓN"
+        ];
+        
+        function selectChar(charId) {
+            document.querySelectorAll('.character').forEach(c => c.classList.remove('selected'));
+            document.querySelector('[data-char="' + charId + '"]').classList.add('selected');
+            selectedCharacter = charId;
+            document.getElementById('startBtn').textContent = '🚀 INICIAR CON ' + chars[charId].name.toUpperCase();
+        }
+        
+        function setupEventListeners() {
+            document.querySelectorAll('.character').forEach(char => {
+                char.addEventListener('click', function() {
+                    const charId = this.getAttribute('data-char');
+                    selectChar(charId);
+                });
+            });
+            
+            document.getElementById('startBtn').addEventListener('click', startGame);
+            document.getElementById('restartBtn').addEventListener('click', restart);
+            
+            // Event listeners para controles de audio
+            document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+            document.getElementById('soundToggle').addEventListener('click', toggleSound);
+        }
+        
+        function startGame() {
+            if (!selectedCharacter) {
+                alert('¡Selecciona un funcionario corrupto!');
+                return;
+            }
+            
+            // Inicializar audio al comenzar el juego
+            initAudio();
+            
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            
+            const char = chars[selectedCharacter];
+            const player = document.getElementById('player');
+            player.style.backgroundImage = `url('${char.image}')`;
+            document.getElementById('playerName').textContent = char.name;
+            
+            score = 0;
+            timeLeft = 90;  // Aumentado de 60 a 90 segundos
+            level = 2023;
+            target = 800;   // Reducido de 1000 a 800 para hacer más fácil el primer nivel
+            moneyBags = [];
+            currentLevel = 1;
+            levelsCompleted = 0;
+            isRunning = true;
+            gameState = 'playing';
+            
+            // Inicializar dificultad
+            updateDifficulty();
+            
+            // Inicializar variables de victoria
+            gameStartTime = Date.now();
+            totalPlayTime = 0;
+            
+            // Iniciar música de fondo
+            if (musicEnabled) {
+                createBackgroundMusic();
+            }
+            
+            updateUI();
+            gameLoop();
+            spawnLoop();
+            timerLoop();
+        }
+        
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('time').textContent = timeLeft;
+            document.getElementById('target').textContent = target;
+            document.getElementById('currentYear').textContent = level;
+            document.getElementById('levelDisplay').textContent = currentLevel;
+            
+            // Actualizar título del nivel
+            const titleIndex = Math.min(currentLevel - 1, levelTitles.length - 1);
+            document.getElementById('levelTitle').textContent = levelTitles[titleIndex];
+        }
+        
+        function showLevelNotification() {
+            // Crear notificación de nivel
+            const notification = document.createElement('div');
+            notification.className = 'level-notification';
+            
+            const titleIndex = Math.min(currentLevel - 1, levelTitles.length - 1);
+            const messageIndex = Math.floor(Math.random() * levelMessages.length);
+            
+            // Información de dificultad
+            const speedIncrease = Math.round((currentDifficultyMultiplier - DIFFICULTY_CONFIG.BASE_SPEED) * 100);
+            const spawnIncrease = Math.round(((DIFFICULTY_CONFIG.BASE_SPAWN_RATE - currentSpawnRate) / DIFFICULTY_CONFIG.BASE_SPAWN_RATE) * 100);
+            
+            let difficultyInfo = "";
+            if (currentLevel > 1) {
+                difficultyInfo = `
+                    <div style="color: #ff8000; font-size: 0.9rem; margin: 10px 0; border-top: 1px solid #333; padding-top: 10px;">
+                        ⚡ DIFICULTAD INCREMENTADA:<br>
+                        🏃 Velocidad: +${speedIncrease}%<br>
+                        ⏱️ Frecuencia: +${spawnIncrease}%
+                    </div>`;
+            }
+            
+            notification.innerHTML = `
+                <div class="level-title">¡NIVEL ${currentLevel} COMPLETADO!</div>
+                <div class="level-title">${levelTitles[titleIndex]}</div>
+                <div class="level-message">${levelMessages[messageIndex]}</div>
+                <div class="level-stats">
+                    💰 Nueva Meta: $${target}M<br>
+                    ⏱️ +30 segundos de tiempo<br>
+                    📅 Presupuesto ${level} desbloqueado
+                </div>
+                ${difficultyInfo}
+                <div style="color: #ffd700; font-size: 0.8rem;">Haz clic para continuar...</div>
+            `;
+            
+            // Agregar al DOM
+            document.body.appendChild(notification);
+            
+            // Remover al hacer clic
+            notification.addEventListener('click', function() {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            });
+            
+            // Auto-remover después de 5 segundos (aumentado para leer la info de dificultad)
+            setTimeout(function() {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+        
+        function spawnMoney() {
+            if (!isRunning) return;
+            
+            const money = moneyTypes[Math.floor(Math.random() * moneyTypes.length)];
+            
+            // Aplicar dificultad progresiva a la velocidad
+            const baseSpeed = 2 + Math.random() * 2;
+            const adjustedSpeed = baseSpeed * currentDifficultyMultiplier;
+            
+            const bag = {
+                id: Date.now(),
+                x: 200 + Math.random() * (window.innerWidth - 400),
+                y: -50,
+                speed: adjustedSpeed,
+                value: money.value,
+                emoji: money.emoji,
+                name: money.name
+            };
+            
+            moneyBags.push(bag);
+            
+            const el = document.createElement('div');
+            el.className = 'money';
+            el.id = 'money-' + bag.id;
+            el.textContent = bag.emoji;
+            el.style.left = bag.x + 'px';
+            el.style.top = bag.y + 'px';
+            el.title = bag.name + ': $' + bag.value + 'M';
+            el.addEventListener('click', function() {
+                collectMoney(bag.id);
+            });
+            
+            document.body.appendChild(el);
+            
+            // Usar velocidad de spawn progresiva
+            const spawnDelay = currentSpawnRate + Math.random() * 500;
+            spawnTimeout = setTimeout(spawnMoney, spawnDelay);
+        }
+        
+        function collectMoney(bagId) {
+            const bagIndex = moneyBags.findIndex(b => b.id === bagId);
+            if (bagIndex === -1) return;
+            
+            const bag = moneyBags[bagIndex];
+            
+            // Recolectar el dinero directamente
+            score += bag.value;
+            createParticle(bag.x, bag.y, '+$' + bag.value + 'M', '#00ff00');
+            
+            // Efecto de sonido de dinero
+            playSound('money');
+            
+            // Efecto visual en el banco
+            const bank = document.getElementById('bank');
+            bank.style.boxShadow = '0 0 30px #ff0040';
+            playSound('bank'); // Sonido del banco
+            setTimeout(function() {
+                bank.style.boxShadow = 'none';
+            }, 300);
+            
+            // Verificar si se alcanzó la meta
+            if (score >= target) {
+                currentLevel++;
+                levelsCompleted++;
+                level++;
+                
+                // Actualizar dificultad para el nuevo nivel
+                updateDifficulty();
+                
+                // Sonido de nivel completado
+                playSound('levelup');
+                
+                // Mostrar notificación de nivel completado
+                showLevelNotification();
+                
+                // Calcular nueva meta (incremento más suave)
+                target = Math.floor(target * 1.25); // Reducido de 1.4 a 1.25
+                timeLeft += 40; // Aumentado el bonus de tiempo de 30 a 40
+                
+                // Partícula de celebración
+                createParticle(window.innerWidth/2, 100, '🎉 ¡NIVEL COMPLETADO! 🎉', '#ffd700');
+            }
+            
+            // Remover el elemento del DOM
+            const el = document.getElementById('money-' + bagId);
+            if (el && el.parentNode) {
+                el.parentNode.removeChild(el);
+            }
+            
+            // Remover del array
+            moneyBags.splice(bagIndex, 1);
+            
+            updateUI();
+            
+            // Verificar condiciones de victoria después de actualizar UI
+            checkVictoryConditions();
+        }
+        
+        function createParticle(x, y, text, color) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.textContent = text;
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            p.style.color = color;
+            p.style.fontSize = '1rem';
+            
+            document.body.appendChild(p);
+            setTimeout(function() {
+                if (p && p.parentNode) {
+                    p.parentNode.removeChild(p);
+                }
+            }, 2000);
+        }
+        
+        function gameLoop() {
+            if (!isRunning) return;
+            
+            for (let i = moneyBags.length - 1; i >= 0; i--) {
+                const bag = moneyBags[i];
+                bag.y += bag.speed;
+                const el = document.getElementById('money-' + bag.id);
+                if (el) {
+                    el.style.top = bag.y + 'px';
+                }
+                
+                // Verificar colisión con el jugador
+                const distance = Math.sqrt((playerX - bag.x) * (playerX - bag.x) + (playerY - bag.y) * (playerY - bag.y));
+                if (distance < 60) { // Aumenté el radio de colisión
+                    collectMoney(bag.id);
+                    continue; // Continuar con la siguiente iteración ya que este elemento fue removido
+                }
+                
+                // Remover elementos que salieron de la pantalla
+                if (bag.y > window.innerHeight + 50) {
+                    if (el && el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                    moneyBags.splice(i, 1);
+                }
+            }
+            
+            if (isRunning) {
+                gameLoopTimeout = setTimeout(gameLoop, 50);
+            }
+        }
+        
+        function spawnLoop() {
+            if (!isRunning) return;
+            spawnMoney();
+        }
+        
+        function timerLoop() {
+            if (!isRunning) return;
+            
+            timeLeft--;
+            updateUI();
+            
+            // Verificar condiciones de victoria cada segundo
+            if (checkVictoryConditions()) {
+                return; // Se ganó el juego
+            }
+            
+            if (timeLeft <= 0) {
+                endGame();
+                return;
+            }
+            
+            if (isRunning) {
+                timerTimeout = setTimeout(timerLoop, 1000);
+            }
+        }
+        
+        function endGame() {
+            isRunning = false;
+            gameState = 'gameOver';
+            
+            // Limpiar timeouts
+            if (spawnTimeout) clearTimeout(spawnTimeout);
+            if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
+            if (timerTimeout) clearTimeout(timerTimeout);
+            
+            // Detener música de fondo
+            if (backgroundMusic && backgroundMusic.oscillator) {
+                backgroundMusic.oscillator.stop();
+                backgroundMusic = null;
+            }
+            
+            // Sonido de game over
+            playSound('gameover');
+            
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('gameOver').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalLevels').textContent = levelsCompleted;
+        }
+        
+        function restart() {
+            isRunning = false;
+            gameState = 'menu';
+            
+            // Limpiar timeouts
+            if (spawnTimeout) clearTimeout(spawnTimeout);
+            if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
+            if (timerTimeout) clearTimeout(timerTimeout);
+            
+            document.querySelectorAll('.money').forEach(function(m) {
+                if (m.parentNode) m.parentNode.removeChild(m);
+            });
+            document.querySelectorAll('.particle').forEach(function(p) {
+                if (p.parentNode) p.parentNode.removeChild(p);
+            });
+            document.querySelectorAll('.level-notification').forEach(function(n) {
+                if (n.parentNode) n.parentNode.removeChild(n);
+            });
+            
+            selectedCharacter = null;
+            score = 0;
+            timeLeft = 90;  // Actualizado también aquí
+            level = 2023;
+            target = 800;   // Actualizado también aquí
+            moneyBags = [];
+            playerX = 100;
+            playerY = 300;
+            currentLevel = 1;
+            levelsCompleted = 0;
+            spawnTimeout = null;
+            gameLoopTimeout = null;
+            timerTimeout = null;
+            
+            // Reinicializar dificultad
+            currentDifficultyMultiplier = 1;
+            currentSpawnRate = DIFFICULTY_CONFIG.BASE_SPAWN_RATE;
+            
+            // Reinicializar variables de victoria
+            gameStartTime = Date.now();
+            totalPlayTime = 0;
+            
+            document.querySelectorAll('.character').forEach(function(c) {
+                c.classList.remove('selected');
+            });
+            document.getElementById('startBtn').textContent = '🚀 INICIAR MALVERSACIÓN';
+            
+            document.getElementById('gameOver').classList.add('hidden');
+            document.getElementById('menu').classList.remove('hidden');
+        }
+        
+        document.addEventListener('mousemove', function(e) {
+            if (gameState === 'playing') {
+                playerX = Math.max(30, Math.min(window.innerWidth - 60, e.clientX - 30));
+                playerY = Math.max(30, Math.min(window.innerHeight - 60, e.clientY - 30));
+                
+                const player = document.getElementById('player');
+                player.style.left = playerX + 'px';
+                player.style.top = playerY + 'px';
+            }
+        });
+        
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (gameState === 'playing' && e.touches.length > 0) {
+                const touch = e.touches[0];
+                playerX = Math.max(30, Math.min(window.innerWidth - 60, touch.clientX - 30));
+                playerY = Math.max(30, Math.min(window.innerHeight - 60, touch.clientY - 30));
+                
+                const player = document.getElementById('player');
+                player.style.left = playerX + 'px';
+                player.style.top = playerY + 'px';
+            }
+        });
+        
+        document.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            if (gameState === 'playing' && e.touches.length > 0) {
+                const touch = e.touches[0];
+                playerX = Math.max(30, Math.min(window.innerWidth - 60, touch.clientX - 30));
+                playerY = Math.max(30, Math.min(window.innerHeight - 60, touch.clientY - 30));
+                
+                const player = document.getElementById('player');
+                player.style.left = playerX + 'px';
+                player.style.top = playerY + 'px';
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            setTimeout(function() {
+                selectChar('jefe');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
